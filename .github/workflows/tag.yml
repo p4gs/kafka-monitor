@@ -5,19 +5,27 @@ on:
     tags:
       - '*'
 
+permissions:
+  contents: read
+
 jobs:
   gradle-java8:
     name: Java 8 release
     runs-on: ubuntu-latest
     steps:
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+      with:
+        egress-policy: audit
+
     - name: checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
       with:
         # bring in all history because the gradle versions plugin needs to "walk back" to the closest ancestor tag
         # to figure out what version this is. optimizing this is left as a challenge to future committers
         fetch-depth: 0
     - name: Set up JDK
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@17f84c3641ba7b8f6deff6309fc4c864478f5d62 # v3.14.1
       with:
         java-version: 11
         distribution: microsoft

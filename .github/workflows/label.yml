@@ -9,11 +9,22 @@ name: "Pull Request Labeler"
 on:
   - pull_request
 
+permissions:
+  contents: read
+
 jobs:
   triage:
+    permissions:
+      contents: read  # for actions/labeler to determine modified files
+      pull-requests: write  # for actions/labeler to add labels to PRs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v3-preview
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        with:
+          egress-policy: audit
+
+      - uses: actions/labeler@fa244eaba5c3a196c5312fbef1e5ff0cf5350dc5 # v3-preview
         with:
           repo-token: "${{ secrets.GITHUB_TOKEN }}"
           
